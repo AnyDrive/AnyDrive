@@ -2,46 +2,33 @@ import { Component } from 'react';
 import { Form, FormControl , FormGroup, Col, Button, ControlLabel, Checkbox, Image } from 'react-bootstrap';
 import request from 'superagent';
 
-const APP_URI = 'http://localhost:3000';
+const APP_URI = process.env.APP_URI || 'http://localhost:3300';
 
 class NewGallery extends Component {
   constructor(props) {
     super(props);
     this.state = {};
 
-    this.createNewGallery = this.createNewGallery.bind(this);
+    this.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
   componentDidMount() {
-    // request
-    //   .post(`${APP_URI}/api/galley`)
-    //   .then(res => {
-    //     console.log(res);
-    //   });
+
   }
 
-  createNewGallery(e) {
-    e.preventDefault();
+  onSubmitForm(e) {
+    let nameValue = document.getElementById('name').value;
     const gallery = {
-      name : e.target.name.value,
+      name : nameValue,
     };
 
-    request
-      .post(`${APP_URI}/api/gallery`)
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .send({name: gallery.name})
-      .then(res => {
-        console.log('NEW GALLERY DATA------>', res);
-      })
-      .catch((err) => console.log(err));
+    this.props.onAdd(gallery);
   }
 
   render() {
     return (
-      <div className="container"> 
-        <div className="main">
-          <div className="col-lg-6 col-md-6 col-xs-12">
-            <Form horizontal onSubmit={ e => this.createNewGallery(e)}>
+        <div>
+            <Form horizontal>
               <FormGroup>
                 <Col sm={12}>
                   <FormControl id="name" name="name" type="text" placeholder="New Gallery"/>
@@ -50,16 +37,10 @@ class NewGallery extends Component {
 
               <FormGroup>
                 <Col sm={12}>
-                  <Button
-                  type="button"
-                  bsStyle="primary"
-                  type="submit"> New Gallery
-                  </Button>
+                  <Button type="button" bsStyle="primary" onClick={e => this.onSubmitForm(e)}>New Gallery</Button>
                 </Col>
               </FormGroup>
             </Form>
-          </div>
-        </div>
       </div>
     );
   }
